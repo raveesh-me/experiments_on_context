@@ -31,17 +31,24 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(
                 height: 40.0,
               ),
-              IconButton(
-                iconSize: 40.0,
-                icon: Icon(
-                  Icons.ac_unit,
-                ),
-                onPressed: () async {
-                  _name = await showDialog(
-                          context: context, builder: dialogBuilder) ??
-                      '';
-                  setState(() {});
-                },
+              Builder(
+                builder: (context) => IconButton(
+                      iconSize: 40.0,
+                      icon: Icon(
+                        Icons.ac_unit,
+                      ),
+                      onPressed: () async {
+                        _name = await showDialog(
+                                barrierDismissible: false,
+                                context: context,
+                                builder: dialogBuilder) ??
+                            "";
+                        setState(() {});
+
+                        Scaffold.of(context).showSnackBar(
+                            SnackBar(content: Text("Hello $_name! You rock")));
+                      },
+                    ),
               ),
               Expanded(
                 child: SizedBox(),
@@ -57,12 +64,31 @@ class _HomeScreenState extends State<HomeScreen> {
 
 Widget dialogBuilder(BuildContext context) {
   double width = MediaQuery.of(context).size.width * 0.8;
+  TextEditingController nameController =
+      TextEditingController(text: '@gmail.com');
   return Center(
     child: Card(
-      child: Container(
-        color: Colors.green,
-        width: width,
-        height: width * 9 / 16,
+      child: Padding(
+        padding: const EdgeInsets.all(18.0),
+        child: Container(
+          width: width,
+          height: width * 9 / 16,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Text('Enter tumhaara naam'),
+              TextField(
+                controller: nameController,
+              ),
+              FlatButton(
+                onPressed: () {
+                  Navigator.of(context).pop(nameController.text);
+                },
+                child: Text('Done'),
+              ),
+            ],
+          ),
+        ),
       ),
     ),
   );
